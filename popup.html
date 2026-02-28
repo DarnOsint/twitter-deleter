@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 320px;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      font-family: 'DM Mono', monospace;
+      overflow: hidden;
+    }
+
+    /* Animated background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      padding: 20px;
+      border-bottom: 1px solid #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 36px;
+      height: 36px;
+      background: #fff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo svg {
+      width: 20px;
+      height: 20px;
+      fill: #000;
+    }
+
+    .header-text h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: #fff;
+    }
+
+    .header-text p {
+      font-size: 10px;
+      color: #555;
+      margin-top: 2px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Username input */
+    .username-section {
+      padding: 16px 20px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .username-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .username-input-wrap {
+      display: flex;
+      align-items: center;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 0 12px;
+      transition: border-color 0.2s;
+    }
+
+    .username-input-wrap:focus-within {
+      border-color: #444;
+    }
+
+    .at-sign {
+      color: #555;
+      font-size: 13px;
+      margin-right: 4px;
+    }
+
+    .username-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      padding: 10px 0;
+    }
+
+    .username-input::placeholder { color: #333; }
+
+    /* Action selector */
+    .action-section {
+      padding: 16px 20px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .action-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .action-btn {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 12px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: left;
+      color: #fff;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .action-btn:hover {
+      border-color: #444;
+      background: #161616;
+    }
+
+    .action-btn.selected {
+      border-color: #fff;
+      background: #161616;
+    }
+
+    .action-btn .action-icon {
+      font-size: 18px;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .action-btn .action-name {
+      font-size: 11px;
+      font-weight: 500;
+      color: #fff;
+      display: block;
+    }
+
+    .action-btn .action-desc {
+      font-size: 9px;
+      color: #555;
+      margin-top: 2px;
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .action-btn.selected .action-desc { color: #888; }
+
+    /* Stats */
+    .stats-section {
+      padding: 14px 20px;
+      border-bottom: 1px solid #1a1a1a;
+      display: flex;
+      gap: 8px;
+    }
+
+    .stat {
+      flex: 1;
+      background: #111;
+      border: 1px solid #1a1a1a;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Status */
+    .status-section {
+      padding: 10px 20px;
+      border-bottom: 1px solid #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #333;
+      flex-shrink: 0;
+    }
+
+    .status-dot.active {
+      background: #00ba7c;
+      animation: blink 1s infinite;
+    }
+
+    .status-dot.done { background: #1d9bf0; }
+    .status-dot.error { background: #f4212e; }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    .status-text {
+      font-size: 11px;
+      color: #666;
+      flex: 1;
+    }
+
+    /* Buttons */
+    .btn-section {
+      padding: 14px 20px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-start {
+      width: 100%;
+      padding: 12px;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-transform: uppercase;
+    }
+
+    .btn-start:hover { background: #e0e0e0; }
+    .btn-start:disabled { background: #222; color: #444; cursor: not-allowed; }
+
+    .btn-stop {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      color: #f4212e;
+      border: 1px solid #f4212e;
+      border-radius: 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-transform: uppercase;
+      display: none;
+    }
+
+    .btn-stop:hover { background: rgba(244,33,46,0.1); }
+
+    /* Not on X warning */
+    .not-x {
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .not-x .icon { font-size: 32px; margin-bottom: 12px; }
+
+    .not-x h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .not-x p {
+      font-size: 11px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .not-x a {
+      color: #1d9bf0;
+      text-decoration: none;
+    }
+
+    /* Page hint */
+    .page-hint {
+      margin: 0 20px 14px;
+      background: #111;
+      border: 1px solid #1a1a1a;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 10px;
+      color: #555;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .page-hint.visible { display: block; }
+    .page-hint span { color: #888; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div id="not-x" style="display:none">
+    <div class="header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </div>
+      <div class="header-text">
+        <h1>X / Twitter Deleter</h1>
+        <p>Profile Cleanup Tool</p>
+      </div>
+    </div>
+    <div class="not-x">
+      <div class="icon">🔗</div>
+      <h2>Not on X/Twitter</h2>
+      <p>Please navigate to <a href="https://x.com" target="_blank">x.com</a> first, then open this extension.</p>
+    </div>
+  </div>
+
+  <div id="main-content">
+    <div class="header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </div>
+      <div class="header-text">
+        <h1>X / Twitter Deleter</h1>
+        <p>Profile Cleanup Tool</p>
+      </div>
+    </div>
+
+    <div class="username-section">
+      <div class="username-label">Your Username</div>
+      <div class="username-input-wrap">
+        <span class="at-sign">@</span>
+        <input type="text" class="username-input" id="username" placeholder="xkgft" />
+      </div>
+    </div>
+
+    <div class="action-section">
+      <div class="action-label">Select Action</div>
+      <div class="action-grid">
+        <button class="action-btn" data-action="tweets">
+          <span class="action-icon">🗑️</span>
+          <span class="action-name">Delete Tweets</span>
+          <span class="action-desc">Your posts</span>
+        </button>
+        <button class="action-btn" data-action="retweets">
+          <span class="action-icon">🔁</span>
+          <span class="action-name">Undo Retweets</span>
+          <span class="action-desc">Reposts</span>
+        </button>
+        <button class="action-btn" data-action="likes">
+          <span class="action-icon">❤️</span>
+          <span class="action-name">Remove Likes</span>
+          <span class="action-desc">Liked posts</span>
+        </button>
+        <button class="action-btn" data-action="replies">
+          <span class="action-icon">💬</span>
+          <span class="action-name">Delete Replies</span>
+          <span class="action-desc">Your comments</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="page-hint" id="page-hint">
+      📍 Navigate to: <span id="hint-url"></span>
+    </div>
+
+    <div class="stats-section">
+      <div class="stat">
+        <span class="stat-num" id="count">0</span>
+        <span class="stat-label">Processed</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="session">0</span>
+        <span class="stat-label">This Session</span>
+      </div>
+    </div>
+
+    <div class="status-section">
+      <div class="status-dot" id="status-dot"></div>
+      <span class="status-text" id="status-text">Select an action to begin</span>
+    </div>
+
+    <div class="btn-section">
+      <button class="btn-start" id="start-btn" disabled>START</button>
+      <button class="btn-stop" id="stop-btn">STOP</button>
+    </div>
+  </div>
+
+</div>
+<script src="popup.js"></script>
+</body>
+</html>
